@@ -2,10 +2,10 @@
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.lib import colors
+from reportlab.lib import colors, utils
 from reportlab.graphics.shapes import Rect, Drawing
 from reportlab.platypus import (
-    BaseDocTemplate, PageTemplate, PageBreak, Frame, FrameBreak, Spacer, Paragraph, Table, TableStyle
+    BaseDocTemplate, PageTemplate, PageBreak, Frame, FrameBreak, Spacer, Paragraph, Table, TableStyle, Image
 )
 from reportlab.platypus.flowables import Flowable
 
@@ -149,6 +149,8 @@ class BulletinBuilder():
 
     def _print_front_page(self):
         self._print_pilgrim_title()
+        self.story.append(Spacer(0, 0.25 * inch))
+        self._print_pilgrim_image()
 
     def _print_pilgrim_title(self):
         # Add text to the second frame
@@ -189,10 +191,19 @@ class BulletinBuilder():
                 ParagraphStyle(
                     name="CenteredLarge",
                     fontSize=14,
+                    leading=14,
                     alignment=1
                 )
             )
         )
+
+    def _print_pilgrim_image(self):
+        # Add the PNG image to the PDF
+        img = utils.ImageReader('pilgrim.PNG')  # Replace 'example.png' with the path to your PNG file
+        img_width, img_height = img.getSize()
+        aspect_ratio = img_height / img_width
+        image = Image('pilgrim.PNG', width=self.frameWidth/1.4, height=self.frameWidth/1.4 * aspect_ratio)  # Adjust the width and height as needed
+        self.story.append(image)
 
 
 # Check if this script is the main module
