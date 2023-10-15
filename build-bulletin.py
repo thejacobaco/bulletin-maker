@@ -87,26 +87,32 @@ class BulletinBuilder():
         self.data = BulletinData()
 
     def build(self):
-        # Add Welcome! Section
-        self._print_welcome()
-
-        # Add the custom element to the Story
-        self._print_announcements()
+        # Print the back of the bulletin
+        self._print_back_page()
 
         # Add a FrameBreak to jump to the next frame
         self.story.append(FrameBreak())
 
-        # Add text to the second frame
-        self.story.append(
-            Paragraph(
-                'This should be on the top of the 2nd Frame!',
-                ))
+        # Print the front of the bulletin
+        self._print_front_page()
 
         # Add a PageBreak to move to the next page
         #self.story.append(PageBreak())
 
         # Build the PDF document using the defined story
         self.doc.build(self.story)
+
+    def _print_back_page(self):
+        # Add Welcome! Section
+        self._print_welcome()
+
+        # Add the custom element to the Story
+        self._print_announcements()
+
+        self.story.append(Spacer(0, 0.25 * inch))
+
+        # Add the serving schedule section
+        self._print_serving_schedule()
 
     def _print_welcome(self):
         data = [["WELCOME!"],[Paragraph("Welcome to the holy service of worship to the Triune God of Creation and Redemption. It is a great privilege to gather to worship the King of kings. If you are visiting with us, we warmly welcome you, and look forward to getting to know you better in our fellowship time after worship. May God’s high feast day be a delight to your soul as you commune with Him in worship!")]]
@@ -126,6 +132,67 @@ class BulletinBuilder():
         announcements = ["ANNOUNCEMENTS"] + self.data.get_announcements()
         # Create a custom RectWithTable element
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/1.7, [[element] for element in announcements]))
+
+    def _print_serving_schedule(self):
+        headers = [Paragraph("<b><u>SERVING SCHEDULE</u></b>"), Paragraph("<b>Today:</b>"), Paragraph("<b>Next Week:</b>")]
+        snack_schedule = self.data.get_coffee_snack_schedule()
+        midweek_theme_schedule = self.data.get_midweek_theme_schedule()
+        data = [
+            headers,
+            [Paragraph("<b>Coffee Snack:</b>"), snack_schedule[0], snack_schedule[1]],
+            [Paragraph("<b>Midweek Theme:</b>"), midweek_theme_schedule[0], midweek_theme_schedule[1]]
+        ]
+        self.story.append(Table(
+            data=data,
+            style=[]
+        ))
+
+    def _print_front_page(self):
+        self._print_pilgrim_title()
+
+    def _print_pilgrim_title(self):
+        # Add text to the second frame
+        self.story.append(
+            Paragraph(
+                '<b>P I L G R I M</b>',
+                ParagraphStyle(
+                    name='PilgrimTitle',
+                    fontSize=48,
+                    leading=60,
+                    alignment=1
+                ),
+            )
+        )
+        self.story.append(
+            Paragraph(
+                "<b>PRESBYTERIAN CHURCH</b>",
+                ParagraphStyle(
+                    name='PilgrimTitle2',
+                    fontSize=24,
+                    leading=36,
+                    alignment=1,
+                ),
+            )
+        )
+        self.story.append(
+            Paragraph(
+                "<b><i>A Congregation of the Orthodox Presbyterian Church</i></b>",
+                ParagraphStyle(
+                    name='Centered',
+                    alignment=1
+                )
+            )
+        )
+        self.story.append(
+            Paragraph(
+                "<b>Metamora, Michigan</b>",
+                ParagraphStyle(
+                    name="CenteredLarge",
+                    fontSize=14,
+                    alignment=1
+                )
+            )
+        )
 
 
 # Check if this script is the main module
