@@ -1,0 +1,3 @@
+requires 'Mojolicious';
+requires 'PDF::API2';
+requires 'PDF::API2::Simple';
