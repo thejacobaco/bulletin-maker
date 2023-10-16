@@ -45,6 +45,18 @@ class BulletinBuilder():
         #    fontName='Helvetica',
         #    fontSize=10,
         #    leading=12)
+        self.style = {
+            'centered_large': ParagraphStyle(
+                name="CenteredLarge",
+                fontSize=14,
+                leading=14,
+                alignment=1
+            ),
+            'centered': ParagraphStyle(
+                name="Centered",
+                alignment=1
+            )
+        }
         
         # Create a BaseDocTemplate for the PDF document
         doc = BaseDocTemplate(
@@ -151,6 +163,8 @@ class BulletinBuilder():
         self._print_pilgrim_title()
         self.story.append(Spacer(0, 0.25 * inch))
         self._print_pilgrim_image()
+        self.story.append(Spacer(0, 0.25 * inch))
+        self._print_bottom_of_front_page()
 
     def _print_pilgrim_title(self):
         # Add text to the second frame
@@ -188,12 +202,7 @@ class BulletinBuilder():
         self.story.append(
             Paragraph(
                 "<b>Metamora, Michigan</b>",
-                ParagraphStyle(
-                    name="CenteredLarge",
-                    fontSize=14,
-                    leading=14,
-                    alignment=1
-                )
+                self.style['centered_large']
             )
         )
 
@@ -202,8 +211,34 @@ class BulletinBuilder():
         img = utils.ImageReader('pilgrim.PNG')  # Replace 'example.png' with the path to your PNG file
         img_width, img_height = img.getSize()
         aspect_ratio = img_height / img_width
-        image = Image('pilgrim.PNG', width=self.frameWidth/1.4, height=self.frameWidth/1.4 * aspect_ratio)  # Adjust the width and height as needed
+        image = Image('pilgrim.PNG', width=self.frameWidth/1.5, height=self.frameWidth/1.5 * aspect_ratio)  # Adjust the width and height as needed
         self.story.append(image)
+
+    def _print_bottom_of_front_page(self):
+        self.story.append(
+            Paragraph(
+                f"<b>THE LORD'S DAY<br/><i>{self.data.date}</i></b>",
+                self.style['centered_large']
+            )
+        )
+        
+        self.story.append(Spacer(0, 0.15 * inch))
+
+        self.story.append(
+            Paragraph(
+                "<b>MORNING WORSHIP — 11:00 AM / EVENING WORSHIP — 6:00 PM</b>",
+                self.style['centered']
+            )
+        )
+
+        self.story.append(Spacer(0, 0.15 * inch))
+
+        self.story.append(
+            Paragraph(
+                "<b><i>“Blessed is the people that know the joyful sound: They shall walk, O Lord, in the light of your countenance. In Your name shall they rejoice all the day; and in your righteousness they shall be exalted.”</i><br/>Psalm 89:15-16 — Inscribed on the church bell in 1878.</b>",
+                self.style['centered']
+            )
+        )
 
 
 # Check if this script is the main module

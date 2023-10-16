@@ -5,6 +5,7 @@ class BulletinData():
         self.announcements = self.fetch_announcements()
         self.coffee_snack_schedule = self.fetch_coffee_snack_schedule()
         self.midweek_theme_schedule = self.fetch_midweek_theme_schedule()
+        self.date = self.fetch_date()
     
     def fetch_announcements(self):
         return [
@@ -21,6 +22,9 @@ class BulletinData():
 
     def fetch_midweek_theme_schedule(self):
         return ["Fall Favourites", "Breakfast for Dinner"]
+    
+    def fetch_date(self):
+        return "August 20th, 2023"
 
     def get_announcements(self):
         return self.announcements
@@ -30,3 +34,6 @@ class BulletinData():
 
     def get_midweek_theme_schedule(self):
         return self.midweek_theme_schedule
+
+    def get_date(self):
+        return self.date
