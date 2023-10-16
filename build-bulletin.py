@@ -127,21 +127,11 @@ class BulletinBuilder():
         self._print_serving_schedule()
 
     def _print_welcome(self):
-        data = [["WELCOME!"],[Paragraph("Welcome to the holy service of worship to the Triune God of Creation and Redemption. It is a great privilege to gather to worship the King of kings. If you are visiting with us, we warmly welcome you, and look forward to getting to know you better in our fellowship time after worship. May God’s high feast day be a delight to your soul as you commune with Him in worship!")]]
-        self.story.append(Table(
-            data=data,
-            colWidths=self.frameWidth,
-            style=[
-                # The two (0, 0) in each attribute represent the range of table cells that the style applies to. Since there's only one cell at (0, 0), it's used for both start and end of the range
-                ('ALIGN', (0, 0), (0, 0), 'CENTER'),
-                ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#000000')), # The fourth argument to this style attribute is the border width
-                ('VALIGN', (0, 0), (0, 0), 'TOP'),
-                ('BOTTOMPADDING', (0, 1), (0, 1), 14),
-            ]
-        ))
+        welcome = [Paragraph("<b>WELCOME!</b>", self.style['centered']),Paragraph("<b>Welcome to the holy service of worship to the Triune God of Creation and Redemption. It is a great privilege to gather to worship the King of kings. If you are visiting with us, we warmly welcome you, and look forward to getting to know you better in our fellowship time after worship. May God’s high feast day be a delight to your soul as you commune with Him in worship!</b>")]
+        self.story.append(RectWithTable(self.frameWidth, self.frameHeight/6, [[element] for element in welcome]))
 
     def _print_announcements(self):
-        announcements = ["ANNOUNCEMENTS"] + self.data.get_announcements()
+        announcements = [Paragraph("<b>ANNOUNCEMENTS</b>", self.style['centered'])] + self.data.get_announcements()
         # Create a custom RectWithTable element
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/1.7, [[element] for element in announcements]))
 
