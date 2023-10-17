@@ -134,14 +134,14 @@ class BulletinBuilder():
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/6, [[element] for element in welcome]))
 
     def _print_announcements(self):
-        announcements = [Paragraph("<b>ANNOUNCEMENTS</b>", self.style['centered'])] + self.data.get_announcements()
+        announcements = [Paragraph("<b>ANNOUNCEMENTS</b>", self.style['centered'])] + self.data.params.get('announcements')
         # Create a custom RectWithTable element
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/1.7, [[element] for element in announcements]))
 
     def _print_serving_schedule(self):
         headers = [Paragraph("<b><u>SERVING SCHEDULE</u></b>"), Paragraph("<b>Today:</b>"), Paragraph("<b>Next Week:</b>")]
-        snack_schedule = self.data.get_coffee_snack_schedule()
-        midweek_theme_schedule = self.data.get_midweek_theme_schedule()
+        snack_schedule = self.data.params.get('coffee_snack_schedule')
+        midweek_theme_schedule = self.data.params.get('midweek_theme_schedule')
         data = [
             headers,
             [Paragraph("<b>Coffee Snack:</b>"), snack_schedule[0], snack_schedule[1]],
@@ -210,7 +210,7 @@ class BulletinBuilder():
     def _print_bottom_of_front_page(self):
         self.story.append(
             Paragraph(
-                f"<b>THE LORD'S DAY<br/><i>{self.data.date}</i></b>",
+                f"<b>THE LORD'S DAY<br/><i>{self.data.params.get('date')}</i></b>",
                 self.style['centered_large']
             )
         )
