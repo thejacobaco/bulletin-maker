@@ -1,5 +1,5 @@
 # Import necessary modules from ReportLab
-from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.pagesizes import LETTER, landscape
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors, utils
@@ -61,7 +61,7 @@ class BulletinBuilder():
         # Create a BaseDocTemplate for the PDF document
         doc = BaseDocTemplate(
             'bulletin.pdf',           # PDF file name
-            pagesize=landscape(A4),     # Landscape A4 page size
+            pagesize=landscape(LETTER),     # Landscape A4 page size
             topMargin=bulletin_constants.TOP_MARGIN,           # Top margin of 1 inch
             bottomMargin=bulletin_constants.BOTTOM_MARGIN,        # Bottom margin of 1 inch
             leftMargin=bulletin_constants.LEFT_MARGIN,          # Left margin of 1 inch
@@ -70,8 +70,9 @@ class BulletinBuilder():
         self.doc = doc
 
         # Define the number of frames, width, and height for each frame
+        frameMargin = 50
         frameCount = 2
-        frameWidth = doc.width / frameCount
+        frameWidth = (doc.width / frameCount) - frameMargin / frameCount
         frameHeight = doc.height - 0.05*inch
         self.frameWidth = frameWidth
         self.frameHeight = frameHeight
@@ -84,7 +85,7 @@ class BulletinBuilder():
                 width=frameWidth,
                 height=frameHeight),
             Frame(
-                x1=doc.leftMargin + frameWidth,
+                x1=doc.leftMargin + frameWidth + frameMargin,
                 y1=doc.bottomMargin,
                 width=frameWidth,
                 height=frameHeight),
@@ -201,7 +202,7 @@ class BulletinBuilder():
         img = utils.ImageReader('pilgrim.PNG')  # Replace 'example.png' with the path to your PNG file
         img_width, img_height = img.getSize()
         aspect_ratio = img_height / img_width
-        image = Image('pilgrim.PNG', width=self.frameWidth/1.5, height=self.frameWidth/1.5 * aspect_ratio)  # Adjust the width and height as needed
+        image = Image('pilgrim.PNG', width=self.frameWidth/1.2, height=self.frameWidth/1.2 * aspect_ratio)  # Adjust the width and height as needed
         self.story.append(image)
 
     def _print_bottom_of_front_page(self):
