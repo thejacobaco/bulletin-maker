@@ -46,6 +46,11 @@ class BulletinBuilder():
         #    fontSize=10,
         #    leading=12)
         self.style = {
+            'large': ParagraphStyle(
+                name="Large",
+                fontSize=12,
+                leading=12
+            ),
             'centered_large': ParagraphStyle(
                 name="CenteredLarge",
                 fontSize=14,
@@ -99,6 +104,9 @@ class BulletinBuilder():
 
         self.data = BulletinData()
 
+    def hspace(self, points):
+        self.story.append(Spacer(0, points))
+
     def build(self):
         # Print the back of the bulletin
         self._print_back_page()
@@ -124,7 +132,7 @@ class BulletinBuilder():
         # Add the custom element to the Story
         self._print_announcements()
 
-        self.story.append(Spacer(0, 0.25 * inch))
+        self.hspace(0.25 * inch)
 
         # Add the serving schedule section
         self._print_serving_schedule()
@@ -154,9 +162,9 @@ class BulletinBuilder():
 
     def _print_front_page(self):
         self._print_pilgrim_title()
-        self.story.append(Spacer(0, 0.25 * inch))
+        self.hspace(0.25 * inch)
         self._print_pilgrim_image()
-        self.story.append(Spacer(0, 0.25 * inch))
+        self.hspace(0.25 * inch)
         self._print_bottom_of_front_page()
 
     def _print_pilgrim_title(self):
@@ -215,7 +223,7 @@ class BulletinBuilder():
             )
         )
         
-        self.story.append(Spacer(0, 0.15 * inch))
+        self.hspace(0.15 * inch)
 
         self.story.append(
             Paragraph(
@@ -224,7 +232,7 @@ class BulletinBuilder():
             )
         )
 
-        self.story.append(Spacer(0, 0.15 * inch))
+        self.hspace(0.15 * inch)
 
         self.story.append(
             Paragraph(
@@ -238,16 +246,49 @@ class BulletinBuilder():
             "<b>MORNING WORSHIP</b>",
             self.style['centered_large']
         ))
+        self.hspace(0.1 * inch)
 
         self._print_leading_elders()
+
+        self.hspace(0.2 * inch)
+
+        self._print_order_of_worship()
     
     def _print_leading_elders(self):
         data = [
-            [Paragraph("<b>Leading in Worship:</b>"), Paragraph("<b>Preaching:</b>")],
-            []
+            [Paragraph("<b>Leading in Worship:</b>", self.style['centered']), Paragraph("<b>Preaching:</b>", self.style['centered'])],
+            [self.data.params.get('leading_in_worship'), self.data.params.get('preaching')]
         ]
 
-        #self.story.append(Table())
+        self.story.append(Table(
+            data,
+            colWidths=120,
+            style=[
+                ('ALIGN', (0, 0), (-1,-1), 'CENTER')
+            ]
+        ))
+
+    def _print_order_of_worship(self):
+
+        self._print_oow_section("BEFORE WORSHIP", [
+            {'text': "Please take this time to quiet your hearts"},
+            {'text': "Welcome, announcements, and silent prayer"}
+        ])
+
+
+    def _print_oow_section(self, title, content):
+        # How to indent and some have bullets and some don't?
+        # Maybe use a table
+
+        self.story.append(Paragraph(
+            f"<b>{title}</b>",
+            self.style['large']
+        ))
+        for line in content:
+            self.story.append(Paragraph(
+                f"{line['text']}",
+                self.style['large']
+            ))
 
 
 

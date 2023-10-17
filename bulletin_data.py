@@ -16,5 +16,7 @@ class BulletinData():
             ],
             'coffee_snack_schedule': ["Swayze & Monroe", "Spencley & Howell"],
             'midweek_theme_schedule': ["Fall Favourites", "Breakfast for Dinner"],
-            'date': "August 20th, 2023"
+            'date': "August 20th, 2023",
+            'leading_in_worship': "Elder Ernie Monroe",
+            'preaching': "Rev. David Bonner",
         }
