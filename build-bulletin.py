@@ -109,8 +109,10 @@ class BulletinBuilder():
         # Print the front of the bulletin
         self._print_front_page()
 
-        # Add a PageBreak to move to the next page
-        #self.story.append(PageBreak())
+        # Add a PageBreak to move to the logical inner side of the bulletin
+        self.story.append(PageBreak())
+
+        self._print_morning_worship()
 
         # Build the PDF document using the defined story
         self.doc.build(self.story)
@@ -230,6 +232,23 @@ class BulletinBuilder():
                 self.style['centered']
             )
         )
+    
+    def _print_morning_worship(self):
+        self.story.append(Paragraph(
+            "<b>MORNING WORSHIP</b>",
+            self.style['centered_large']
+        ))
+
+        self._print_leading_elders()
+    
+    def _print_leading_elders(self):
+        data = [
+            [Paragraph("<b>Leading in Worship:</b>"), Paragraph("<b>Preaching:</b>")],
+            []
+        ]
+
+        #self.story.append(Table())
+
 
 
 # Check if this script is the main module
