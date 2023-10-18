@@ -8,6 +8,7 @@ from reportlab.platypus import (
     BaseDocTemplate, PageTemplate, PageBreak, Frame, FrameBreak, Spacer, Paragraph, Table, TableStyle, Image
 )
 from reportlab.platypus.flowables import Flowable
+from reportlab.lib.enums import TA_RIGHT
 
 # CUSTOM CODE
 from bulletin_data import BulletinData
@@ -51,6 +52,11 @@ class BulletinBuilder():
                 fontSize=12,
                 leading=12
             ),
+            'xlarge': ParagraphStyle(
+                name="XLarge",
+                fontSize=14,
+                leading=14
+            ),
             'centered_large': ParagraphStyle(
                 name="CenteredLarge",
                 fontSize=14,
@@ -60,7 +66,11 @@ class BulletinBuilder():
             'centered': ParagraphStyle(
                 name="Centered",
                 alignment=1
-            )
+            ),
+            'right': ParagraphStyle(
+                name="RightAligned",
+                alignment=TA_RIGHT
+            ),
         }
         
         # Create a BaseDocTemplate for the PDF document
@@ -252,7 +262,7 @@ class BulletinBuilder():
 
         self.hspace(0.2 * inch)
 
-        self._print_order_of_worship()
+        self._print_order_of_worship("morning")
     
     def _print_leading_elders(self):
         data = [
@@ -268,12 +278,19 @@ class BulletinBuilder():
             ]
         ))
 
-    def _print_order_of_worship(self):
-
-        self._print_oow_section("BEFORE WORSHIP", [
-            {'text': "Please take this time to quiet your hearts"},
-            {'text': "Welcome, announcements, and silent prayer"}
-        ])
+    def _print_order_of_worship(self, service):
+        oow = self.data.generate_oow(service)
+        for section in oow['sections']:
+            self._print_oow_section(section['title'], section['content'])
+        self.story.append(Paragraph(
+            oow['benediction_song'],
+            self.style['xlarge']
+        ))
+        if service == 'morning':
+            self.story.append(Paragraph(
+                "<i>* Congregation standing</i>",
+                self.style['right']
+            ))
 
 
     def _print_oow_section(self, title, content):
@@ -284,11 +301,14 @@ class BulletinBuilder():
             f"<b>{title}</b>",
             self.style['large']
         ))
-        for line in content:
-            self.story.append(Paragraph(
-                f"{line['text']}",
-                self.style['large']
-            ))
+
+        self.story.append(Table(
+            data=[[("*" if 'footnote' in line else ''), Paragraph(line['text'], self.style['large'])] for line in content],
+            colWidths=(0.10 * inch, self.frameWidth - 0.10 * inch),
+            style=[
+                ('LEFTPADDING', (1,0), (1, -1), 0.5 * inch)
+            ]
+        ))
 
 
 
