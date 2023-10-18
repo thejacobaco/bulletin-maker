@@ -29,6 +29,14 @@ class BulletinData():
             'sermon_verse': "John 20:19-31",
             'sermon_title': "Assent To The Truth",
             'sermon_song': "Hymn #216",
+            'evening_call_to_worship_verse': "Revelation 22:1-5",
+            'evening_call_to_worship_song': "Psalm 19B",
+            'nt_reading': "Hebrews 4",
+            'evening_congregational_reading': "WCF 21.7",
+            'evening_confession_song': "Psalm 92A",
+            'evening_sermon_verse': "Genesis 2:1-3",
+            'evening_sermon_title': "The Sabbath; A Creation Ordinance",
+            'evening_sermon_song': "Hymn #609",
         }
     
     # This will eventually be in a 'oow_templates' table in dynamodb
@@ -103,6 +111,64 @@ class BulletinData():
                         'title': "GOD BLESSES HIS PEOPLE IN CHRIST - BENEDICTION",
                         'content': [
                             {'text': "Psalm 106G", 'footnote': True},
+                        ],
+                    },
+                ]
+            },
+            'evening': {
+                'benediction_song': "<i>“All blessings to Jehovah be ascribed forever then; for evermore, so let it be. Amen, yes, and Amen.”</i>",
+                'sections': [
+                    {
+                        'title': "BEFORE THE WORSHIP SERVICE",
+                        'content': [
+                            {
+                                'text': "Please take this time to quiet your hearts"
+                            },
+                            {
+                                'text': "Welcome, announcements, and silent prayer"
+                            }
+                        ]
+                    },
+                    {
+                        'title': "GOD CALLS HIS PEOPLE TO WORSHIP",
+                        'content': [
+                            {
+                                'text': "Call to Worship - {{ evening_call_to_worship_verse }}",
+                                'footnote': True,
+                            },
+                            {
+                                'text': "Invocation",
+                                'footnote': True,
+                            },
+                            {
+                                'text': "{{ evening_call_to_worship_song }}",
+                                'footnote': True,
+                            },
+                            {
+                                'text': "NT Reading: {{ nt_reading }}"
+                            }
+                        ]
+                    },
+                    {
+                        'title': "GOD HEARS HIS PEOPLE’S CONFESSION",
+                        'content': [
+                            {'text': "{{ evening_congregational_reading }} <i>(see below)</i>"},
+                            {'text': "Prayer for the kingdom"},
+                            {'text': "{{ evening_confession_song }}", 'footnote': True}
+                        ],
+                    },
+                    {
+                        'title': "GOD INSTRUCTS HIS PEOPLE FROM HIS WORD",
+                        'content': [
+                            {'text': "Reading God’s Word: {{ evening_sermon_verse }}", 'footnote': True},
+                            {'text': "Preaching: <i>{{ evening_sermon_title }}</i>"},
+                            {'text': "{{ evening_sermon_song }}", 'footnote': True},
+                        ],
+                    },
+                    {
+                        'title': "GOD BLESSES HIS PEOPLE IN CHRIST - BENEDICTION",
+                        'content': [
+                            {'text': "Psalm 89H stz. 32", 'footnote': True},
                         ],
                     },
                 ]

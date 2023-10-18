@@ -132,6 +132,10 @@ class BulletinBuilder():
 
         self._print_morning_worship()
 
+        self.story.append(FrameBreak())
+
+        self._print_evening_worship()
+
         # Build the PDF document using the defined story
         self.doc.build(self.story)
 
@@ -309,6 +313,16 @@ class BulletinBuilder():
                 ('LEFTPADDING', (1,0), (1, -1), 0.5 * inch)
             ]
         ))
+
+    def _print_evening_worship(self):
+        self.story.append(Paragraph(
+            "<b>EVENING WORSHIP</b>",
+            self.style['centered_large']
+        ))
+
+        self.hspace(0.2 * inch)
+
+        self._print_order_of_worship("evening")
 
 
 
