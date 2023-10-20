@@ -46,36 +46,57 @@ class BulletinBuilder():
         #    fontName='Helvetica',
         #    fontSize=10,
         #    leading=12)
+        self.fontName = "Times-Roman"
         self.style = {
             'large': ParagraphStyle(
                 name="Large",
+                fontName=self.fontName,
                 fontSize=12,
                 leading=12
             ),
             'centered_large': ParagraphStyle(
                 name="CenteredLarge",
+                fontName=self.fontName,
                 fontSize=12,
                 leading=12,
                 alignment=1
             ),
             'xlarge': ParagraphStyle(
                 name="XLarge",
+                fontName=self.fontName,
                 fontSize=14,
                 leading=14
             ),
             'centered_xlarge': ParagraphStyle(
                 name="CenteredXLarge",
+                fontName=self.fontName,
                 fontSize=14,
                 leading=14,
                 alignment=1
             ),
             'centered': ParagraphStyle(
                 name="Centered",
+                fontName=self.fontName,
                 alignment=1
             ),
             'right': ParagraphStyle(
                 name="RightAligned",
+                fontName=self.fontName,
                 alignment=TA_RIGHT
+            ),
+            'bulletin_title': ParagraphStyle(
+                name='PilgrimTitle',
+                fontName=self.fontName,
+                fontSize=48,
+                leading=60,
+                alignment=1
+            ),
+            'bulletin_subtitle': ParagraphStyle(
+                name='PilgrimTitle2',
+                fontName=self.fontName,
+                fontSize=24,
+                leading=36,
+                alignment=1,
             ),
         }
         
@@ -87,7 +108,7 @@ class BulletinBuilder():
             bottomMargin=bulletin_constants.BOTTOM_MARGIN,        # Bottom margin of 1 inch
             leftMargin=bulletin_constants.LEFT_MARGIN,          # Left margin of 1 inch
             rightMargin=bulletin_constants.RIGHT_MARGIN)         # Right margin of 1 inch
-        
+
         self.doc = doc
 
         # Define the number of frames, width, and height for each frame
@@ -192,32 +213,19 @@ class BulletinBuilder():
         self.story.append(
             Paragraph(
                 '<b>P I L G R I M</b>',
-                ParagraphStyle(
-                    name='PilgrimTitle',
-                    fontSize=48,
-                    leading=60,
-                    alignment=1
-                ),
+                self.style['bulletin_title'],
             )
         )
         self.story.append(
             Paragraph(
                 "<b>PRESBYTERIAN CHURCH</b>",
-                ParagraphStyle(
-                    name='PilgrimTitle2',
-                    fontSize=24,
-                    leading=36,
-                    alignment=1,
-                ),
+                self.style['bulletin_subtitle']
             )
         )
         self.story.append(
             Paragraph(
                 "<b><i>A Congregation of the Orthodox Presbyterian Church</i></b>",
-                ParagraphStyle(
-                    name='Centered',
-                    alignment=1
-                )
+                self.style['centered']
             )
         )
         self.story.append(
