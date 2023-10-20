@@ -52,13 +52,19 @@ class BulletinBuilder():
                 fontSize=12,
                 leading=12
             ),
+            'centered_large': ParagraphStyle(
+                name="CenteredLarge",
+                fontSize=12,
+                leading=12,
+                alignment=1
+            ),
             'xlarge': ParagraphStyle(
                 name="XLarge",
                 fontSize=14,
                 leading=14
             ),
-            'centered_large': ParagraphStyle(
-                name="CenteredLarge",
+            'centered_xlarge': ParagraphStyle(
+                name="CenteredXLarge",
                 fontSize=14,
                 leading=14,
                 alignment=1
@@ -217,7 +223,7 @@ class BulletinBuilder():
         self.story.append(
             Paragraph(
                 "<b>Metamora, Michigan</b>",
-                self.style['centered_large']
+                self.style['centered_xlarge']
             )
         )
 
@@ -233,7 +239,7 @@ class BulletinBuilder():
         self.story.append(
             Paragraph(
                 f"<b>THE LORD'S DAY<br/><i>{self.data.params.get('date')}</i></b>",
-                self.style['centered_large']
+                self.style['centered_xlarge']
             )
         )
         
@@ -258,7 +264,7 @@ class BulletinBuilder():
     def _print_morning_worship(self):
         self.story.append(Paragraph(
             "<b>MORNING WORSHIP</b>",
-            self.style['centered_large']
+            self.style['centered_xlarge']
         ))
         self.hspace(0.1 * inch)
 
@@ -317,12 +323,26 @@ class BulletinBuilder():
     def _print_evening_worship(self):
         self.story.append(Paragraph(
             "<b>EVENING WORSHIP</b>",
-            self.style['centered_large']
+            self.style['centered_xlarge']
         ))
 
         self.hspace(0.2 * inch)
 
         self._print_order_of_worship("evening")
+
+        self.hspace(0.2 * inch)
+
+        self._print_congregational_confession()
+
+    def _print_congregational_confession(self):
+        data = [
+            [Paragraph(f"<b>{self.data.params['corporate_confession_title']}</b>", self.style['centered_large'])],
+            [Paragraph(self.data.params['corporate_confession_text'], self.style['large'])]
+        ]
+        self.story.append(RectWithTable(self.frameWidth, self.frameHeight/3.3, data))
+
+
+        
 
 
 

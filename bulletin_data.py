@@ -37,6 +37,8 @@ class BulletinData():
             'evening_sermon_verse': "Genesis 2:1-3",
             'evening_sermon_title': "The Sabbath; A Creation Ordinance",
             'evening_sermon_song': "Hymn #609",
+            'corporate_confession_title': "WESTMINSTER CONFESSION OF FAITH 21.7 Of The Sabbath Day",
+            'corporate_confession_text': "As it is of the law of nature, that, in general, a due proportion of time be set apart for the worship of God; so, in His Word, by a positive, moral, and perpetual commandment, binding all men in all ages, he hath particularly appointed one day in seven for a Sabbath, to be kept holy unto Him: which, from the beginning of the world to the resurrection of Christ, was the last day of the week; and, from the resurrection of Christ, was changed into the first day of the week, which in Scripture is called the Lord’s Day, and is to be continued to the end of the world as the Christian Sabbath.",
         }
     
     # This will eventually be in a 'oow_templates' table in dynamodb
