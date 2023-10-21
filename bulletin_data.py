@@ -1,11 +1,15 @@
 from reportlab.platypus import Paragraph
 from jinja2 import Template
+import boto3
+from botocore.exceptions import ClientError
 
 class BulletinData():
     def __init__(self):
         self.params = self.fetch_bulletin_params()
-        self.orders_of_worship = self.fetch_oow()
+        self.dynamodb = boto3.resource('dynamodb', region_name='us-east-1', endpoint_url='http://localhost:8000')
 
+    # Refactor this to store OOW params by their oow and take note of the fact we know exactly what variables will need to be replaced in there
+    # for validation, etc
     def fetch_bulletin_params(self):
         return {
             'announcements': [
@@ -39,147 +43,32 @@ class BulletinData():
             'evening_sermon_song': "Hymn #609",
             'corporate_confession_title': "WESTMINSTER CONFESSION OF FAITH 21.7 Of The Sabbath Day",
             'corporate_confession_text': "As it is of the law of nature, that, in general, a due proportion of time be set apart for the worship of God; so, in His Word, by a positive, moral, and perpetual commandment, binding all men in all ages, he hath particularly appointed one day in seven for a Sabbath, to be kept holy unto Him: which, from the beginning of the world to the resurrection of Christ, was the last day of the week; and, from the resurrection of Christ, was changed into the first day of the week, which in Scripture is called the Lord’s Day, and is to be continued to the end of the world as the Christian Sabbath.",
-        }
-    
-    # This will eventually be in a 'oow_templates' table in dynamodb
-    # Should let the user edit this template and type the mustache syntax into these things and set the footnote boolean
-    def fetch_oow(self):
-        return {
-            'morning': {
-                'benediction_song': "<i>“Blessed be the Lord, the God of Israel from everlasting ev’n to everlasting. Let all the people say, “Amen!” Praise ye the Lord!”</i>",
-                'sections': [
-                    {
-                        'title': "BEFORE WORSHIP",
-                        'content': [
-                            {
-                                'text': "Please take this time to quiet your hearts"
-                            },
-                            {
-                                'text': "Welcome, announcements, and silent prayer"
-                            }
-                        ]
-                    },
-                    {
-                        'title': "GOD CALLS HIS PEOPLE TO WORSHIP",
-                        'content': [
-                            {
-                                'text': "Call to Worship - {{ call_to_worship_verse }}",
-                                'footnote': True,
-                            },
-                            {
-                                'text': "Invocation",
-                                'footnote': True,
-                            },
-                            {
-                                'text': "{{ call_to_worship_song }}",
-                                'footnote': True,
-                            },
-                            {
-                                'text': "OT Reading: {{ ot_reading }}"
-                            }
-                        ]
-                    },
-                    {
-                        'title': "GOD HEARS HIS PEOPLE’S CONFESSION",
-                        'content': [
-                            {'text': "Corporate Confession of Faith <i>(see insert)</i>"}
-                        ],
-                    },
-                    {
-                        'title': "GOD’S ASSURANCE THROUGH CHRIST",
-                        'content': [
-                            {'text': "God’s assurance of pardon: {{ assurance_of_pardon_verse }}"},
-                            {'text': "{{ assurance_song }}", 'footnote': True},
-                            {'text': "Pastoral prayer"}
-                        ],
-                    },
-                    {
-                        'title': "GOD RECEIVES HIS PEOPLE’S GIFTS OF LOVE",
-                        'content': [
-                            {'text': "Giving of Tithes and Offerings"},
-                            {'text': "Offertory response: Hymn 367", 'footnote': True},
-                            {'text': "<i>(1st verse; sung unannounced)</i>"}
-                        ],
-                    },
-                    {
-                        'title': "GOD INSTRUCTS HIS PEOPLE FROM HIS WORD",
-                        'content': [
-                            {'text': "Reading God’s Word: {{ sermon_verse }}", 'footnote': True},
-                            {'text': "Preaching God’s Word: <i>{{ sermon_title }}</i>"},
-                            {'text': "{{ sermon_song }}", 'footnote': True},
-                        ],
-                    },
-                    {
-                        'title': "GOD BLESSES HIS PEOPLE IN CHRIST - BENEDICTION",
-                        'content': [
-                            {'text': "Psalm 106G", 'footnote': True},
-                        ],
-                    },
-                ]
+            'oow_id': {
+                'morning': "morning",
+                'evening': "evening",
             },
-            'evening': {
-                'benediction_song': "<i>“All blessings to Jehovah be ascribed forever then; for evermore, so let it be. Amen, yes, and Amen.”</i>",
-                'sections': [
-                    {
-                        'title': "BEFORE THE WORSHIP SERVICE",
-                        'content': [
-                            {
-                                'text': "Please take this time to quiet your hearts"
-                            },
-                            {
-                                'text': "Welcome, announcements, and silent prayer"
-                            }
-                        ]
-                    },
-                    {
-                        'title': "GOD CALLS HIS PEOPLE TO WORSHIP",
-                        'content': [
-                            {
-                                'text': "Call to Worship - {{ evening_call_to_worship_verse }}",
-                                'footnote': True,
-                            },
-                            {
-                                'text': "Invocation",
-                                'footnote': True,
-                            },
-                            {
-                                'text': "{{ evening_call_to_worship_song }}",
-                                'footnote': True,
-                            },
-                            {
-                                'text': "NT Reading: {{ nt_reading }}"
-                            }
-                        ]
-                    },
-                    {
-                        'title': "GOD HEARS HIS PEOPLE’S CONFESSION",
-                        'content': [
-                            {'text': "{{ evening_congregational_reading }} <i>(see below)</i>"},
-                            {'text': "Prayer for the kingdom"},
-                            {'text': "{{ evening_confession_song }}", 'footnote': True}
-                        ],
-                    },
-                    {
-                        'title': "GOD INSTRUCTS HIS PEOPLE FROM HIS WORD",
-                        'content': [
-                            {'text': "Reading God’s Word: {{ evening_sermon_verse }}", 'footnote': True},
-                            {'text': "Preaching: <i>{{ evening_sermon_title }}</i>"},
-                            {'text': "{{ evening_sermon_song }}", 'footnote': True},
-                        ],
-                    },
-                    {
-                        'title': "GOD BLESSES HIS PEOPLE IN CHRIST - BENEDICTION",
-                        'content': [
-                            {'text': "Psalm 89H stz. 32", 'footnote': True},
-                        ],
-                    },
-                ]
-            }
         }
     
     def generate_oow(self, service):
-        oow = self.orders_of_worship[service]
+        oow = self.fetch_oow(self.params['oow_id'][service])
         for section in oow['sections']:
             for line in section['content']:
                 line['text'] = Template(line['text']).render(self.params)
         return oow
+
+    def fetch_oow(self, service_id):
+        table_name = "OrdersOfWorship"
+        table = self.dynamodb.Table(table_name)
+        try:
+            response = table.get_item(
+                Key={
+                    'service_id': service_id
+                }
+            )
+            item = response.get('Item', {})
+            if item:
+                return item
+            else:
+                print(f"No item found with service ID: {service_id}")
+        except ClientError as e:
+            print(f"Error retrieving item: {e.response['Error']['Message']}")
