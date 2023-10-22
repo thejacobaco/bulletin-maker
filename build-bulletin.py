@@ -143,12 +143,11 @@ class BulletinBuilder():
         # Create a list to store the content (story) of the PDF
         self.story = []
 
-        self.data = BulletinData()
-
     def hspace(self, points):
         self.story.append(Spacer(0, points))
 
-    def build(self):
+    def build(self, service_date):
+        self.data = BulletinData(service_date)
         # Print the back of the bulletin
         self._print_back_page()
 
@@ -361,4 +360,4 @@ class BulletinBuilder():
 # Check if this script is the main module
 if __name__ == "__main__":
     builder = BulletinBuilder()
-    builder.build()
+    builder.build('2023-08-20')
