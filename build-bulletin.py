@@ -186,14 +186,14 @@ class BulletinBuilder():
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/6, [[element] for element in welcome]))
 
     def _print_announcements(self):
-        announcements = [Paragraph("<b>ANNOUNCEMENTS</b>", self.style['centered'])] + [Paragraph(item, self.style['regular']) for item in self.data.params.get('announcements')]
+        announcements = [Paragraph("<b>ANNOUNCEMENTS</b>", self.style['centered'])] + [Paragraph(item, self.style['regular']) for item in self.data.params.get('announcements', [])]
         # Create a custom RectWithTable element
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/1.7, [[element] for element in announcements]))
 
     def _print_serving_schedule(self):
         headers = [Paragraph("<b><u>SERVING SCHEDULE</u></b>", self.style['regular']), Paragraph("<b>Today:</b>", self.style['regular']), Paragraph("<b>Next Week:</b>", self.style['regular'])]
-        snack_schedule = self.data.params.get('coffee_snack_schedule')
-        midweek_theme_schedule = self.data.params.get('midweek_theme_schedule')
+        snack_schedule = self.data.getSchedule('coffee_snack_schedule')
+        midweek_theme_schedule = self.data.getSchedule('midweek_theme_schedule')
         data = [
             headers,
             [Paragraph("<b>Coffee Snack:</b>", self.style['regular']), Paragraph(snack_schedule[0], self.style['regular']), Paragraph(snack_schedule[1], self.style['regular'])],
@@ -288,7 +288,7 @@ class BulletinBuilder():
     def _print_leading_elders(self):
         data = [
             [Paragraph("<b>Leading in Worship:</b>", self.style['centered']), Paragraph("<b>Preaching:</b>", self.style['centered'])],
-            [Paragraph(self.data.params.get('leading_in_worship'), self.style['centered']), Paragraph(self.data.params.get('preaching'), self.style['centered'])]
+            [Paragraph(self.data.params.get('leading_in_worship', ""), self.style['centered']), Paragraph(self.data.params.get('preaching', ""), self.style['centered'])]
         ]
 
         self.story.append(Table(
@@ -301,10 +301,10 @@ class BulletinBuilder():
 
     def _print_order_of_worship(self, service):
         oow = self.data.generate_oow(service)
-        for section in oow['sections']:
+        for section in oow.get('sections', []):
             self._print_oow_section(section['title'], section['content'])
         self.story.append(Paragraph(
-            oow['benediction_song'],
+            oow.get('benediction_song', ""),
             self.style['xlarge']
         ))
         if service == 'morning':
@@ -347,8 +347,8 @@ class BulletinBuilder():
 
     def _print_congregational_confession(self):
         data = [
-            [Paragraph(f"<b>{self.data.params['corporate_confession_title']}</b>", self.style['centered_large'])],
-            [Paragraph(self.data.params['corporate_confession_text'], self.style['large'])]
+            [Paragraph(f"<b>{self.data.params.get('corporate_confession_title', '')}</b>", self.style['centered_large'])],
+            [Paragraph(self.data.params.get('corporate_confession_text', ""), self.style['large'])]
         ]
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/3.3, data))
 

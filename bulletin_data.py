@@ -25,11 +25,14 @@ class BulletinData():
                 return item
             else:
                 print(f"No item found with service date: {self.service_date}")
+                return {}
         except ClientError as e:
             print(f"Error retrieving item: {e.response['Error']['Message']}")
 
     
     def generate_oow(self, service):
+        if self.params.get('oow_id') is None:
+            return {}
         oow = self.fetch_oow(self.params['oow_id'][service])
         for section in oow['sections']:
             for line in section['content']:
@@ -52,3 +55,11 @@ class BulletinData():
                 print(f"No item found with service ID: {service_id}")
         except ClientError as e:
             print(f"Error retrieving item: {e.response['Error']['Message']}")
+
+    def getSchedule(self, schedule_name):
+        schedule = self.params.get(schedule_name)
+        if schedule is None or len(schedule) == 0:
+            schedule = ["",""]
+        elif len(schedule) == 1:
+            schedule.append("")
+        return schedule
