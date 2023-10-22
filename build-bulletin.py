@@ -48,6 +48,10 @@ class BulletinBuilder():
         #    leading=12)
         self.fontName = "Times-Roman"
         self.style = {
+            'regular': ParagraphStyle(
+                name="Regular",
+                fontName=self.fontName
+            ),
             'large': ParagraphStyle(
                 name="Large",
                 fontName=self.fontName,
@@ -179,22 +183,22 @@ class BulletinBuilder():
         self._print_serving_schedule()
 
     def _print_welcome(self):
-        welcome = [Paragraph("<b>WELCOME!</b>", self.style['centered']),Paragraph("<b>Welcome to the holy service of worship to the Triune God of Creation and Redemption. It is a great privilege to gather to worship the King of kings. If you are visiting with us, we warmly welcome you, and look forward to getting to know you better in our fellowship time after worship. May God’s high feast day be a delight to your soul as you commune with Him in worship!</b>")]
+        welcome = [Paragraph("<b>WELCOME!</b>", self.style['centered']),Paragraph("<b>Welcome to the holy service of worship to the Triune God of Creation and Redemption. It is a great privilege to gather to worship the King of kings. If you are visiting with us, we warmly welcome you, and look forward to getting to know you better in our fellowship time after worship. May God’s high feast day be a delight to your soul as you commune with Him in worship!</b>", self.style['regular'])]
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/6, [[element] for element in welcome]))
 
     def _print_announcements(self):
-        announcements = [Paragraph("<b>ANNOUNCEMENTS</b>", self.style['centered'])] + self.data.params.get('announcements')
+        announcements = [Paragraph("<b>ANNOUNCEMENTS</b>", self.style['centered'])] + [Paragraph(item, self.style['regular']) for item in self.data.params.get('announcements')]
         # Create a custom RectWithTable element
         self.story.append(RectWithTable(self.frameWidth, self.frameHeight/1.7, [[element] for element in announcements]))
 
     def _print_serving_schedule(self):
-        headers = [Paragraph("<b><u>SERVING SCHEDULE</u></b>"), Paragraph("<b>Today:</b>"), Paragraph("<b>Next Week:</b>")]
+        headers = [Paragraph("<b><u>SERVING SCHEDULE</u></b>", self.style['regular']), Paragraph("<b>Today:</b>", self.style['regular']), Paragraph("<b>Next Week:</b>", self.style['regular'])]
         snack_schedule = self.data.params.get('coffee_snack_schedule')
         midweek_theme_schedule = self.data.params.get('midweek_theme_schedule')
         data = [
             headers,
-            [Paragraph("<b>Coffee Snack:</b>"), snack_schedule[0], snack_schedule[1]],
-            [Paragraph("<b>Midweek Theme:</b>"), midweek_theme_schedule[0], midweek_theme_schedule[1]]
+            [Paragraph("<b>Coffee Snack:</b>", self.style['regular']), Paragraph(snack_schedule[0], self.style['regular']), Paragraph(snack_schedule[1], self.style['regular'])],
+            [Paragraph("<b>Midweek Theme:</b>", self.style['regular']), Paragraph(midweek_theme_schedule[0], self.style['regular']), Paragraph(midweek_theme_schedule[1], self.style['regular'])]
         ]
         self.story.append(Table(
             data=data,
@@ -285,7 +289,7 @@ class BulletinBuilder():
     def _print_leading_elders(self):
         data = [
             [Paragraph("<b>Leading in Worship:</b>", self.style['centered']), Paragraph("<b>Preaching:</b>", self.style['centered'])],
-            [self.data.params.get('leading_in_worship'), self.data.params.get('preaching')]
+            [Paragraph(self.data.params.get('leading_in_worship'), self.style['centered']), Paragraph(self.data.params.get('preaching'), self.style['centered'])]
         ]
 
         self.story.append(Table(
